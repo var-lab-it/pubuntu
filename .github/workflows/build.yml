@@ -1,0 +1,44 @@
+name: Build
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  build:
+    timeout-minutes: 200
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php_version: ['8.0', '8.1', '8.2', '8.3', '8.4']
+    steps:
+      - name: Login to Github Docker Registry (PHP ${{ matrix.php_version }})
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up QEMU (PHP ${{ matrix.php_version }})
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx (PHP ${{ matrix.php_version }})
+        uses: docker/setup-buildx-action@v3
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      - name: Build and push (PHP ${{ matrix.php_version }})
+        uses: docker/build-push-action@v6
+        with:
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ env.REGISTRY }}/var-lab-it/pubuntu:php${{ matrix.php_version }}-${{ steps.extract_branch.outputs.branch }}
+          build-args: PHP_VERSION=${{ matrix.php_version }}
