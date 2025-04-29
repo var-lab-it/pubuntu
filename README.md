@@ -1,16 +1,16 @@
-# G(ipeline)Ubuntu PHP - for GitLab CI Pipelines
+# p(ipeline)Ubuntu PHP - for GitLab CI Pipelines
 
-In some cases it is a good idea to run some CI jobs in an Ubuntu Docker image. **glubuntu-php** is such an image, with PHP-8 packages pre-installed. It makes it easier (and faster) to run e.g. unit tests faster in the CI pipeline.
+**pubuntu** is a lightweight Ubuntu-based Docker image designed for GitLab CI pipelines. It comes with pre-installed PHP 8 packages and essential development tools, making it easier and faster to run jobs such as unit tests and static code analysis.
 
-It also includes a json-server to mock APIs, also NodeJS and NPM are installed.
+The image also includes a **json-server** for API mocking, along with **Node.js** and **npm**.
 
-Pre-installed tools / packages / software:
-- json-server
-- nodejs 17 + npm
-- git
-- acl
-- PHP 8.1/8.0/7.4
-- mysql-client
+## Pre-installed Tools and Packages
+
+- Node.js + npm
+- Git
+- ACL (Access Control Lists)
+- PHP 8.0, 8.1, 8.2, 8.3, 8.4
+- MySQL Client
 
 ## How to use it
 
@@ -22,8 +22,8 @@ The following examples shows how to use the image for a single pipeline job in t
 #.gitlab-ci.yml
 
 variables:
-  PHP_VERSION: 8.1 # also possible is 8.0 or 7.4
-  JOB_IMAGE: git.var-lab.com:5050/dev-tools/glubuntu-php:latest-php-8.1
+  PHP_VERSION: 8.1 # also possible is 8.4, 8.3, 8.2, 8.1, 8.0
+  JOB_IMAGE: git.var-lab.com:5050/dev-tools/glubuntu-php:latest-php-$PHP_VERSION
 
 checks_backend:
   image:
@@ -31,10 +31,8 @@ checks_backend:
   script:
     - composer install
     - composer normalize --dry-run
-    - composer run yaml-lint
-    - composer run check-style
-    - composer run phpstan
-    - composer run psalm
+    - composer run ...
+    - ...
 ```
 
 ### Running phpunit-tests in the pipeline
@@ -45,8 +43,8 @@ In the following example you can see how the image is used to run phpunit tests.
 #.gitlab-ci.yml
 
 variables:
-  PHP_VERSION: 8.1 # also possible is 8.0 or 7.4
-  JOB_IMAGE: git.var-lab.com:5050/dev-tools/glubuntu-php:latest-php-8.1
+  PHP_VERSION: 8.1 # also possible is 8.4, 8.3, 8.2, 8.1, 8.0
+  JOB_IMAGE: git.var-lab.com:5050/dev-tools/glubuntu-php:latest-php-$PHP_VERSION
 
 tests_backend:
   services:
@@ -76,3 +74,5 @@ tests_backend:
       junit: backend/report.xml
       cobertura: backend/coverage.cobertura.xml
 ```
+
+Created by Anton Dachauer | [var-lab.com](https://var-lab.com)
