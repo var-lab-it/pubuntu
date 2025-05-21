@@ -32,7 +32,7 @@ RUN add-apt-repository -y ppa:ondrej/php \
       && apt-get clean \
       && rm -rf /var/lib/apt/lists/*
 
-COPY --from=composer:2.5.8 /usr/bin/composer /usr/local/bin/composer
+COPY --from=composer:2.8.8 /usr/bin/composer /usr/local/bin/composer
 
 RUN echo "memory_limit=-1" >> /etc/php/$PHP_VERSION/cli/conf.d/99_memory_limit.ini
 
